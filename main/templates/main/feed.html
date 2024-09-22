@@ -1,0 +1,54 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}Feed{% endblock title %}
+{% block content %}
+<div class="feed-bars">
+    <div class="feed-search">
+        <!-- Add search bar here if needed -->
+    </div>
+
+    <main>
+        <aside>
+            <!-- Profile and Menu Section -->
+            
+            <ul>
+                <li><img class="dp" src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/user-solid.svg' %}{% endif %}" alt="{{ user.username }}'s profile picture">
+                <p id="username">@{{ user.username }}</p></li>
+
+                <li><a href="{% url 'profile' user.username %}">Profile</a></li>
+                <li><a href="{% url 'add-post' %}">Post</a></li>
+                <li><a href="#">New Squad</a></li>
+                <li><a href="#">Explore</a></li>
+                <li><a href="#">Discussions</a></li>
+                <li><a href="#">Tags</a></li>
+                <li><a href="#">Leaderboard</a></li>
+                <li><a href="#">Activity</a></li>
+                <li><a href="#">Submit a Link</a></li>
+                <li><a href="#">Bookmarks</a></li>
+                <li><a href="#">History</a></li>
+                <li><a href="#">Docs</a></li>
+                <li><a href="#">Changelog</a></li>
+                <li><a href="#">Get Started</a></li>
+                <li><a id="get-started-link" href="/logout">Logout</a></li>
+            </ul>
+        </aside>
+
+        <section>
+            <!-- Featured Content Section -->
+            <h2>Featured Content</h2>
+            
+            <div class="articles">
+                {% for article in articles %}
+                <article>
+                    <h3>{{ article.title }}</h3>
+                    <p>{{ article.description }}</p>
+                    <a href="#">Read More</a>
+                </article>
+                {% empty %}
+                <p>No articles available at the moment.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock content %}

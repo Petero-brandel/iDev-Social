@@ -1,0 +1,33 @@
+
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}Edit Profile{% endblock title %}
+{% block content %}
+<link rel="stylesheet" href="{% static "css/registration.css" %}">
+<div class="form-holder">
+    <h2>Edit Profile</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_bio">What are your major Stacks:</label><br>
+            <label id="textarea" for="textarea"> {{ form.bio }} </label>
+        </div>
+
+        <div class="form-group">
+            <label for="git">Enter Your GitHub Link:</label><br>
+            <label id="textarea" for="textarea"> {{ form.github }} </label>
+        </div>
+
+        <div class="form-group">
+            <label for="id_image">Upload a Profile Picture:</label>
+            {{ form.image }}
+        </div>
+        <div class="form-group">
+            <label for="id_cover_photo"> Upload a Cover Photo:</label>
+            {{ form.cover_photo }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+
+{% endblock content %}

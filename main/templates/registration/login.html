@@ -1,0 +1,32 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}Login {% endblock title %}
+{% block content %}
+    <link rel="stylesheet" href="{% static "css/registration.css" %}">
+    <div class="form-holder">
+        <h2><b>Login Your Account<span class="dot">.</span></b></h2>
+        <h6>Start Sharing your Beautiful moments <br>and designs, Developer</h6>
+    
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Inline styling for non-field errors -->
+            {% if form.non_field_errors %}
+                <div style="color: #ff0000; font-size: 14px; margin-bottom: 10px;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="form">Username:</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                <label for="form">Password:</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <p>Don't Have an Account? <a href="/signup">Register</a></p>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static "css/registration.css" %}">
+
+<div class="form-holder">
+    <h2><b>Create an Account<span class="dot">.</span></b></h2>
+    <h6>Get an Account, Start Sharing your Beautiful moments <br>and designs, Developer</h6>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Display non-field errors (general errors) -->
+        {% if form.non_field_errors %}
+            <div style="color: #ff0000; font-size: 14px; margin-bottom: 10px;">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-group">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div style="color: #ff0000; font-size: 14px;">
+                    {{ form.username.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            {% if form.email.errors %}
+                <!-- Inline error message for the email field -->
+                <div style="color: #ff0000; font-size: 14px;">
+                    {{ form.email.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="form">GitHub Link</label>
+            {{ form.github }}
+        </div>
+        
+        <div class="form-group">
+            <label for="form">Password:</label>
+            <p id="pass-warning">Password must be at least 8 characters *</p>
+            {{ form.password1 }}
+            {% if form.password1.errors %}
+                <div style="color: #ff0000; font-size: 14px;">
+                    {{ form.password1.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="form">Confirm Password: </label>
+            {{ form.password2 }}
+            {% if form.password2.errors %}
+                <div style="color: #ff0000; font-size: 14px;">
+                    {{ form.password2.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="form">Accept our privacy policy</label>
+            {{ form.agree_terms }}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Register</button>
+        <p>Already Have an Account? <a href="/login">Login</a></p>
+    </form>
+</div>
+{% endblock content %}

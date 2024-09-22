@@ -1,0 +1,15 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+
+<form method="POST" action="">
+    {{csrf_token}}
+    
+    <P>Are you sure you want to logout?</P>
+    <a href="request.HTTP.META.REFERER">Go back</a>
+
+    <input type="submit" value="Confirm"/>
+
+</form>
+
+{% endblock content %}
