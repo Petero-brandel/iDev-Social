@@ -20,11 +20,14 @@
         <div>
             <aside>
                 <ul>
-                    <li><img class="dp" src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/user-solid.svg' %}{% endif %}" alt="{{ user.username }}'s profile picture">
-                    <p id="username">@{{ user.username }}</p></li>
                     <li><a href="/feed">Home</a></li>
-                    <li><a href="{% url 'profile' user.username %}">{{user.username}}'s Profile</a></li>
                     <li><a href="{{user.profile.github}}">GitHub</a></li>
+
+                    <!-- Profile Edit (only visible for the logged-in user) -->
+                    {% if request.user == user %}
+                        <li><a id="edit-profile" href="{% url 'edit_profile' user.username %}">Profile Settings</a></li>
+                    {% endif %}
+             
                     <li><a href="#">New Squad</a></li>
                     <li><a href="#">Explore</a></li>
                     <li><a href="#">Discussions</a></li>
@@ -34,167 +37,165 @@
                     <li><a class="tab" id="following-tab">Following</a></li>
 
                       <!-- Following Section -->
-                    <div class="following-list" id="following-content" style="display: none;">
-                        {% for following in user.profile.following.all %}
-                        <div class="following-item">
-                            <div>
-                                <img src="{{ following.profile.image.url }}" alt="{{ following.username }}'s profile picture">
-                            </div>
-                            <div>
-                                <a href="{% url 'profile' following.username %}">{{following.username}}</a>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <p>0 following.</p>
-                        {% endfor %}
-                    </div>
-                    </label>
-
-                    <!-- Followers Section -->
-                        <div class="followers-list" id="followers-content" style="display: block;">
-                            {% for follower in user.profile.followers.all %}
-                            <div class="follower-item">
+                        <div class="following-list" id="following-content" style="display: none;">
+                            {% for following in user.profile.following.all %}
+                            <div class="following-item">
                                 <div>
-                                    <img src="{{ follower.profile.image.url }}" alt="{{ follower.username }}'s profile picture">
+                                    <img src="{{ following.profile.image.url }}" alt="{{ following.username }}'s profile picture">
                                 </div>
                                 <div>
-                                    <a href="{% url 'profile' follower.username %}">{{follower.username}}</a>
+                                    <a href="{% url 'profile' following.username %}">{{following.username}}</a>
                                 </div>
                             </div>
                             {% empty %}
-                                <p>0 followers</p>
+                            <p>0 following.</p>
                             {% endfor %}
-
                         </div>
+
+                    <!-- Followers Section -->
+                            <div class="followers-list" id="followers-content" style="display: block;">
+                                {% for follower in user.profile.followers.all %}
+                                <div class="follower-item">
+                                    <div>
+                                        <img src="{{ follower.profile.image.url }}" alt="{{ follower.username }}'s profile picture">
+                                    </div>
+                                    <div>
+                                        <a href="{% url 'profile' follower.username %}">{{follower.username}}</a>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                    <p>0 followers</p>
+                                {% endfor %}
+
+                            </div>
 
                     <li><a href="#">Docs</a></li>
                     <li><a href="#">Changelog</a></li>
                     <li><a href="#">Get Started</a></li> 
-                    
-                    <div class="menu-opt">
-                        <div><img src="{% static 'images/right-from-bracket-solid.svg'%}" alt=""></div> 
-                        <div><a id="get-started-link" href="/logout">Logout</a></div>
-                    </div>
+                    <li><a id="get-started-link" href="/logout">Logout</a></li>
                 </ul>
             </aside>
         </div>
     
-        <!-- Profile Picture -->
-        <div class="profile-picture">
-            <div>
-                {% if user.profile.image %}
-                    <img src="{{ user.profile.image.url }}" alt="{{ user.username }}'s profile picture">
-                {% else %}
-                    <img src="{% static 'default.jpg' %}" alt="Default Profile Picture">
-                {% endif %}
-            </div>
-            
-            <!-- User Information -->
-            <div>
-                <h1 class="username">{{ user.username }}</h1>
-                <p class="bio">{{ user.profile.bio|default:"This user hasn't updated their bio yet." }}</p>
-            </div>
-        </div>
-
-        <!-- Profile Edit (only visible for the logged-in user) -->
-        <div>
-            {% if request.user == user %}
-            <a id="edit-profile" href="{% url 'edit_profile' user.username %}">Edit Profile</a>
-            {% endif %}
-        </div>
-
+        
 
     </div>
 
-    <div class="follower-counts">
-            <!-- Followers and Following Counts -->
+    <!-- Profile Picture -->
+    <div class="profile-picture">
+        <div>
+            {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" alt="{{ user.username }}'s profile picture">
+            {% else %}
+                <img src="{% static 'default.jpg' %}" alt="Default Profile Picture">
+            {% endif %}
+        </div>
         
-            <div>
-                    <h1>{{ user.profile.followers.count}}</h1>
-                    <p>Followers</p>
-            </div>
+        <!-- User Information -->
+        <div>
+            <h1 class="username">{{ user.username }}</h1>
+            <p class="bio">{{ user.profile.bio|slice:":50"|linebreaks|default:"This user hasn't updated their bio yet." }}</p>
+            <span class="more-text" style="display: none;">{{ user.profile.bio|slice:"50:"|linebreaks}}</span>
+            <a href="javascript:void(0);" class="toggle-btn" id="showmore">Show More</a>
+        </div>
 
-            <div>
-                <h1>{{ user.profile.following.count }}</h1>
-                <p>Following</p>
-            </div>
+    </div>
 
-            <!-- Follow/Unfollow Button (only show for other users' profiles) -->
-            <div>            
-                {% if request.user != user %}
-                <form method="POST" action="{% url 'follow_user' user.id %}">
-                    {% csrf_token %}
-                    {% if request.user in user.profile.followers.all %}
-                        <button type="submit" class="follow-button">Unfollow</button>
-                    {% else %}
-                        <button type="submit" class="follow-button">Follow</button>
+    <div class="dp-2-nav">
+            <!-- Followers and Following Counts -->
+            <div class="follower-counts">
+                <div>
+                        <h1>{{ user.profile.followers.count}}</h1>
+                        <p>Followers</p>
+                </div>
+
+                <div>
+                    <h1>{{ user.profile.following.count }}</h1>
+                    <p>Following</p>
+                </div>
+            
+                <!-- Follow/Unfollow Button (only show for other users' profiles) -->
+                <div>            
+                    {% if request.user != user %}
+                    <form method="POST" action="{% url 'follow_user' user.id %}">
+                        {% csrf_token %}
+                        {% if request.user in user.profile.followers.all %}
+                            <button type="submit" class="follow-button">Unfollow</button>
+                        {% else %}
+                            <button type="submit" class="follow-button">Follow</button>
+                        {% endif %}
+                    </form>
                     {% endif %}
-                </form>
-                {% endif %}
+                    
             </div> 
         
-        </div>
-    <hr>
-</div>
+            <div>
+                {% if user == request.user %}
+                <a class="dp-2-nav-btn" href="{% url 'add-project' %}"> Upload Project </href=>
 
+                {% else %}
+                <a class="dp-2-nav-btn" href="">More Projects</a>
+                {% endif %}
+                <a class="dp-2-nav-btn" href="">Create Post</a>
+            </div>
 
-
-
-
+            <div>
+                <a class="dp-2-nav-btn"  href="">Notification</a>
+                <a class="dp-2-nav-btn" href="">Inbox</a>
+            </div>
+    </div>
    
-
+    <hr>
   
-
+</div>  
 <!-- Tabs for Posts, Followers, Following -->
 
+<h1 id="project">#Projects</h1>
 <!-- Main Content Section -->
 <section id="main-content">
-    <!-- Display Projects (Posts) -->
-    <h1>Posts</h1>
+    <!-- Carousel for Projects -->
+    <div class="carousel-container">
+        <button class="prev" onclick="plusSlides(-1)">&#10094;</button>
 
-    <section id="main-content">
-        <!-- Display Projects (Posts) -->
-         <h1>Posts</h1>
-        <div class="projects-grid" id="posts-content">
+        <div class="projects-carousel">
             {% for project in user.projects.all %}
-            <div class="project">
+            <div class="project-slide">
+                <p class="timesince">Posted {{project.created_at|timesince}} ago </p>
                 <img src="{{ project.image.url }}" alt="Project image">
-                <div class="project-info">
+                <div class="project">
                     <h3>{{ project.title }}</h3>
-                    <p id="descr">{{project.description|linebreaks}}</p>
-                    <a href="{{project.url}}">Go to Project</a>
+                    
+
+                    {% comment %} <p class="description">
+                        <!-- Show the first 50 characters and hide the rest initially -->
+                        {{ project.description|slice:":50"|linebreaks}}<span class="dots">...</span>
+                        <span class="more-text" style="display: none;">{{ project.description|slice:"50:"|linebreaks}}</span>
+                        <a href="javascript:void(0);" class="toggle-btn" id="showmore">Show More</a>
+                    </p>
+                    {% endcomment %}
+
+                    <p id="url"><a href="{{ project.url }}">View Project</a></p>
                     <hr id="hr">
                     <p class="language">Built with:__ {{ project.UsedLanguage }}</p>
+                   
+                    <center>
+                    {% if project.user == request.user %}
+                    <form action="{% url 'delete-project' project.pk %}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this project?');">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn">Trash Project</button>
+                    </form>
+                    {% endif %}
+                    </center>
                 </div>
             </div>
             {% empty %}
-            <p>No posts available.</p>
+            <p>No projects available.</p>
             {% endfor %}
         </div>
 
-  
+        <button class="next" onclick="plusSlides(1)">&#10095;</button>
+    </div>
 </section>
 
-<!-- JavaScript to switch between tabs -->
-<script>
-document.getElementById('posts-tab').addEventListener('click', function() {
-    document.getElementById('posts-content').style.display = 'block';
-    document.getElementById('followers-content').style.display = 'none';
-    document.getElementById('following-content').style.display = 'none';
-});
-
-document.getElementById('followers-tab').addEventListener('click', function() {
-    document.getElementById('posts-content').style.display = 'none';
-    document.getElementById('followers-content').style.display = 'block';
-    document.getElementById('following-content').style.display = 'none';
-});
-
-document.getElementById('following-tab').addEventListener('click', function() {
-    document.getElementById('posts-content').style.display = 'none';
-    document.getElementById('followers-content').style.display = 'none';
-    document.getElementById('following-content').style.display = 'block';
-});
-
-</script>
 
 {% endblock content %}

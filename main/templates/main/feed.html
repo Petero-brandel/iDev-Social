@@ -2,7 +2,8 @@
 {% load static %}
 {% block title %}Feed{% endblock title %}
 {% block content %}
-<div class="feed-bars">
+<link rel="stylesheet" href="{% static "css/feed.css" %}">
+    <div class="feed-bars">
     <div class="feed-search">
         <!-- Add search bar here if needed -->
     </div>
@@ -12,14 +13,14 @@
             <!-- Profile and Menu Section -->
             
             <ul>
-                <li><img class="dp" src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/user-solid.svg' %}{% endif %}" alt="{{ user.username }}'s profile picture">
+                <li><img class="dp-o" src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'images/user-solid.svg' %}{% endif %}" alt="{{ user.username }}'s profile picture">
                 <p id="username">@{{ user.username }}</p></li>
 
                 <li><a href="{% url 'profile' user.username %}">Profile</a></li>
-                <li><a href="{% url 'add-post' %}">Post</a></li>
-                <li><a href="#">New Squad</a></li>
-                <li><a href="#">Explore</a></li>
-                <li><a href="#">Discussions</a></li>
+                <li><a href="{% url 'add_post' %}">Make a Post</a></li>
+                <li><a href="{% url 'add-project' %}" >Upload a Project</a></li>
+                <li><a href="{% url 'create-room' %}">Create Room</a></li>
+                {% comment %} <li><a href="{% url 'update-room' room.id %}">Update Room</a></li> {% endcomment %}
                 <li><a href="#">Tags</a></li>
                 <li><a href="#">Leaderboard</a></li>
                 <li><a href="#">Activity</a></li>
@@ -33,22 +34,149 @@
             </ul>
         </aside>
 
-        <section>
-            <!-- Featured Content Section -->
-            <h2>Featured Content</h2>
-            
-            <div class="articles">
-                {% for article in articles %}
-                <article>
-                    <h3>{{ article.title }}</h3>
-                    <p>{{ article.description }}</p>
-                    <a href="#">Read More</a>
-                </article>
-                {% empty %}
-                <p>No articles available at the moment.</p>
-                {% endfor %}
+       
+
+    <!-- Section displaying posts -->
+<!-- Section displaying posts -->
+
+<li><a href="{% url 'add_post' %}">Make a Post</a></li>
+
+<!-- Section displaying posts -->
+<section>
+    <div class="post-plate">
+        {% for post in posts %}
+        <div class="post">
+            <div class="poster">
+                <div>
+                    <img src="{% if user.profile.image %}{{ post.user.profile.image.url }}{% else %}{% static 'images/user-solid.svg' %}{% endif %}" alt="{{ user.username }}'s profile picture">
+                </div>
+                <div>
+                    <p><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></p>
+                    <span class="timesince">{{ post.created_at|timesince }} ago</span>
+                </div>
             </div>
-        </section>
-    </main>
+            
+            <!-- Post content -->
+            <p id="p">{{ post.content }}</p>
+
+            <!-- Conditionally display the image only if it exists -->
+            {% if post.image %}
+                <div class="image-container">
+                    <img src="{{ post.image.url }}" alt="">
+                </div>
+            {% endif %}
+
+            <!-- Likes and Comments -->
+            <div class="like-comment-pane">
+                <form action="{% url 'like_post' post.id %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="likeBtn" type="submit">❤ {{ post.likes.count }}</button>
+                </form>
+
+                <button class="toggle-comments" onclick="toggleComments({{ post.id }})" style="display:block;">
+                    Comments ({{ post.comments.count }})
+                </button>
+                
+                <p>{{post.comment.content}}</p>
+                <form action="{% url 'add_comment' post.id %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="text">
+                    <button class="likeBtn" type="submit">Comment</button>
+                </form>
+
+                {% if post.user == request.user %}
+                <form action="{% url 'delete-post' post.pk %}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this project?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+                {% else %}
+                <button><a class="project-btn" href="{% url 'profile' post.user.username %}">{{ post.user.username }}'s Projects</a></button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+
+<!-- Modal Structure -->
+<div id="postModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modal-body">
+            <!-- Dynamic content will be inserted here -->
+        </div>
+    </div>
 </div>
+
+<!-- JavaScript for modal and comment handling -->
+<script>
+
+    function toggleComments(postId) {
+        const commentsSection = document.getElementById(`comments-${postId}`);
+        const likeTab = document.querySelector('.likeBtn')
+        const commentTab = document.querySelector('.commentBtn')
+        if (commentsSection.style.display === "none") {
+            commentsSection.style.display = "block";  // Show comments
+            likeTab.style.display = "block";
+            commentTab.style.display = "block";
+        } else {
+            commentsSection.style.display = "none";   // Hide comments
+            likeTab.style.display = "none";
+            commentTab.style.display = "none";
+        }
+    }
+    
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.querySelector('.toggle-btn');
+        const moreText = document.querySelector('.more-text');
+        const dots = document.querySelector('.dots');
+    
+        toggleBtn.addEventListener('click', function() {
+            if (moreText.style.display === "none") {
+                moreText.style.display = "inline";
+                dots.style.display = "none";  // Hide the dots when expanded
+                toggleBtn.textContent = "Show Less";
+            } else {
+                moreText.style.display = "none";
+                dots.style.display = "inline";  // Show the dots when collapsed
+                toggleBtn.textContent = "Show More";
+            }
+        });
+    });
+
+    function showPostDetails(postId, content, imageUrl, likesCount, commentsCount, username) {
+        var modalBody = document.getElementById("modal-body");
+        modalBody.innerHTML = `
+            <h2>${username}'s Post</h2>
+            <p class="modal-text">${content}</p>
+            ${imageUrl ? `<img src="${imageUrl}" alt="Post image">` : ''}
+            <div class="modal-footer">
+                <p>Likes: ${likesCount}</p>
+                <p>Comments: ${commentsCount}</p>
+                <div class="comments-section" id="modal-comments-section-${postId}" style="display:none;"></div>
+                <button class="toggle-comments" onclick="toggleModalComments(${postId})">Toggle Comments</button>
+            </div>
+        `;
+        document.getElementById("postModal").style.display = "block"; // Show the modal
+    }
+
+    
+    // Close the modal when the 'x' is clicked
+    document.getElementsByClassName("close")[0].onclick = function() {
+        document.getElementById("postModal").style.display = "none";
+    }
+    
+    // Close the modal if the user clicks outside of it
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("postModal")) {
+            document.getElementById("postModal").style.display = "none";
+        }
+    }
+</script>
+
+
+    </main>     
+
 {% endblock content %}

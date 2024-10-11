@@ -9,12 +9,16 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group">
+            <label for="name">Your First Name:</label><br>
+            <label id="textarea" for="textarea"> {{ form.name }} </label>
+        </div>
+        <div class="form-group">
             <label for="id_bio">What are your major Stacks:</label><br>
             <label id="textarea" for="textarea"> {{ form.bio }} </label>
         </div>
 
         <div class="form-group">
-            <label for="git">Enter Your GitHub Link:</label><br>
+            <label for="git">Replace with Your GitHub Link:</label><br>
             <label id="textarea" for="textarea"> {{ form.github }} </label>
         </div>
 

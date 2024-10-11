@@ -61,7 +61,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'Authenticate.urls'
+ROOT_URLCONF = 'idevpro.urls'
 
 TEMPLATES = [
     {
@@ -79,7 +79,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Authenticate.wsgi.application'
+WSGI_APPLICATION = 'idevpro.wsgi.application'
 
 
 # Database
@@ -134,3 +134,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/feed'
 LOGOUT_REDIRECT_URL = '/login'
+OTHER_REDIRECT_URL = '/'

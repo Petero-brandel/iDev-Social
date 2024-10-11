@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Profile, Project
+from .models import Profile, Project, Post, Room
 
 class SignupForm(UserCreationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ''}))
@@ -25,28 +25,49 @@ class LoginForm(AuthenticationForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['bio', 'github', 'image', 'cover_photo']  # Include any fields you want to allow users to update
+        fields = ['bio', 'github', 'image', 'cover_photo', 'name']  # Include any fields you want to allow users to update
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 3}),
+            'name': forms.Textarea(attrs={'rows': 1}),
         }
         
-class CreatePostForm(ModelForm):
+class CreateProjectForm(ModelForm):
     class Meta:
         model = Project
         fields = ('title', 'description', 'UsedLanguage', 'url', 'image')
         labels = {
-            'title': 'Enter Your Title here',
-            'description': 'Briefly Describe what your Project is all about',
-            'UsedLanguage': 'What Languages Did you Use',
-            'url': 'What Languages Did you Use',
+            'title': 'Enter Your Project Title:',
+            'description': 'Briefly Describe what your Project is all about:',
+            'UsedLanguage': 'Language/Framework(s):',
+            'url': 'Link to Project:',
             'image': 'Upload Your Design Image here'
         }
         widgets = {
-            'title' : forms.TextInput(attrs={'class' : 'form-control', 'placeholder' : 'Enter a Title'}),
-            'description' : forms.TextInput(attrs={'class' : 'form-control', 'placeholder' : 'Enter a Title'}),
-            'UsedLanguage' : forms.TextInput(attrs={'class' : 'form-control', 'placeholder' : 'Enter a Title'}),
+            'title' : forms.TextInput(attrs={'class' : 'form-control', 'placeholder' : ''}),
+            'description': forms.Textarea(attrs={'rows': 8}),
+            'UsedLanguage' : forms.TextInput(attrs={'class' : 'textarea-field', 'class' : 'form-control', 'placeholder' : 'e.g php, python, etc'}),
             'url' : forms.TextInput(attrs={'class' : 'form-control', 'placeholder' : 'enter a link to your project (website/github)'}),
-            
-           
-            
+                 
         }
+        
+        #adding Post ------------>
+        
+class CreatePostForm(ModelForm):
+    class Meta:
+        model = Post
+        fields = ('content', 'image')
+        label ={
+            'content' : '',
+            'image' : 'Upload an Image'
+        }
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 8}),
+        }
+        
+        
+        # create room forms============>
+
+class CreateRoomForm(ModelForm):
+    class Meta:
+        model = Room
+        fields = ('name', 'topic', 'description')
