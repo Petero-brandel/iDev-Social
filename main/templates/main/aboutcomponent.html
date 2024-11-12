@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Animated SaaS UI Design</title>
+    <style>
+ 
+        .containerab {
+            margin-top: 70px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+            max-width: 1200px;
+            padding: 40px;
+        }
+
+        .containerab > .card:nth-child(2) {
+            grid-column: span 2;
+        }
+
+        /* Card Styling */
+        .card {
+            background-color: #1B1B1B;
+            padding: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            transform: scale(0.95) translateY(20px);
+            opacity: 0;
+            animation: fadeInZoom 0.6s ease forwards;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: scale(1.04) rotate(1deg);
+            box-shadow: 0 25px 35px rgba(0, 120, 255, 0.5);
+        }
+
+        /* Title and Text */
+        .card h2 {
+            font-size: 1.6rem;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card p {
+            color: #A0A0A0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            z-index: -1;
+            position: relative;
+        }
+
+        /* Gradient Overlay for each card */
+        .card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 120, 255, 0.2), transparent 70%);
+            border-radius: 50%;
+            transform: rotate(45deg);
+            z-index: -1;
+            animation: gradientPulse 4s ease-in-out infinite;
+        }
+
+        .automation::before {
+            background: radial-gradient(circle, rgba(0, 120, 255, 0.5), transparent 70%);
+            right: 10%;
+            top: 30%;
+            width: 400px;
+            height: 400px;
+        }
+
+        .collaboration-tools::before {
+            background: radial-gradient(circle, rgba(0, 120, 255, 0.3), transparent 70%);
+            left: 10%;
+            bottom: 20%;
+            width: 350px;
+            height: 350px;
+        }
+
+        /* Special Elements */
+        .project-management .new-task {
+            background-color: #0078FF;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+            z-index: -1;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .project-management .new-task:hover {
+            background-color: #3399FF;
+            transform: translateY(-2px);
+            z-index: -1;
+        }
+
+        /* Animated Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: rgba(0, 120, 255, 0.8);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleMove 5s linear infinite;
+        }
+
+        /* Keyframes for Animations */
+        @keyframes fadeInZoom {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes gradientPulse {
+            0%, 100% {
+                transform: scale(1) rotate(45deg);
+            }
+            50% {
+                transform: scale(1.2) rotate(45deg);
+            }
+        }
+
+        @keyframes particleMove {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(100vw - 50%), calc(100vh - 50%)) scale(0.2);
+            }
+        }
+
+        /* Staggered Animation Delay */
+        .project-management {
+            animation-delay: 0.2s;
+        }
+
+        .automation {
+            animation-delay: 0.4s;
+        }
+
+        .analytics-reporting {
+            animation-delay: 0.6s;
+        }
+
+        .collaboration-tools {
+            animation-delay: 0.8s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="containerab">
+        <!-- Project Management Card -->
+        <div class="card project-management">
+            <h2>Project Management</h2>
+            <p>With Quility You Can Easily Organize Tasks, Assign Deadlines, And Track Progress in Real-Time.</p>
+            <div class="particles">
+                <!-- Particles for Animation -->
+                <div class="particle" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
+                <div class="particle" style="top: 30%; left: 60%; animation-delay: 0.5s;"></div>
+                <div class="particle" style="top: 70%; left: 40%; animation-delay: 1s;"></div>
+            </div>
+        </div>
+        
+
+        <!-- Automation Card -->
+        <div class="card automation">
+            <h2>Automation</h2>
+            <p>Automate Repetitive Tasks And Streamline Your Workflows With Our Powerful Automation Features.</p>
+            <div class="particles">
+                <div class="particle" style="top: 20%; left: 50%; animation-delay: 0.7s;"></div>
+                <div class="particle" style="top: 40%; left: 70%; animation-delay: 1.2s;"></div>
+                <div class="particle" style="top: 60%; left: 30%; animation-delay: 0.3s;"></div>
+            </div>
+        </div>
+
+        <!-- Analytics & Reporting Card -->
+        <div class="card analytics-reporting">
+            <h2>Analytics & Reporting</h2>
+            <p>Gain Valuable Insights into Your Team's Performance And Project Progress With Our Built-in Analytics And Reporting Tools.</p>
+            <div class="particles">
+                <div class="particle" style="top: 15%; left: 35%; animation-delay: 0.9s;"></div>
+                <div class="particle" style="top: 50%; left: 80%; animation-delay: 0.4s;"></div>
+                <div class="particle" style="top: 75%; left: 25%; animation-delay: 0.6s;"></div>
+            </div>
+        </div>
+
+        <!-- Collaboration Tools Card -->
+        <div class="card collaboration-tools">
+            <h2>Collaboration Tools</h2>
+            <p>Foster Collaboration And Teamwork With Our Suite of Collaboration Tools.</p>
+            <div class="particles">
+                <div class="particle" style="top: 30%; left: 10%; animation-delay: 0.8s;"></div>
+                <div class="particle" style="top: 60%; left: 50%; animation-delay: 0.2s;"></div>
+                <div class="particle" style="top: 90%; left: 70%; animation-delay: 0.5s;"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

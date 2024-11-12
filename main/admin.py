@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Friend, Project, Post, Comment, Messages, Room, Topic
-
+from .models import Profile, Friend, Project, Post, Comment, Group, Conversations
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'bio', 'image')
     search_fields = ('user__username', 'bio')
@@ -20,14 +19,16 @@ class CommentAdmin(admin.ModelAdmin):
 class LikesAdmin(admin.ModelAdmin):
     list_display = ('user', 'post')
     search_fields = ('user__username',)
+    
+class ConversationsAdmin(admin.ModelAdmin):
+    list_display = ('user', 'group', 'body', 'created_at' 'updated_at')
+    search_fields = ('user__username', 'content')
 
 
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(Topic)
-admin.site.register(Room)
-admin.site.register(Messages)
-
+admin.site.register(Group)
+admin.site.register(Conversations)
 

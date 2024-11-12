@@ -6,7 +6,7 @@ from django.utils import timezone
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=225, default='username')
+    name = models.CharField(max_length=225, default='user.username')
     bio = models.TextField(max_length=500, blank=True)
     github = models.CharField(max_length=225, default='https://github.com/')
     image = models.ImageField(upload_to='profile_pics', default='default.jpg')
@@ -46,12 +46,13 @@ class Post(models.Model):
     image = models.ImageField(upload_to='project_pics', blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
+
     def __str__(self):
         return f"{self.user.username}'s post"
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, related_name="likes", on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name="likes", on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -66,26 +67,19 @@ class Comment(models.Model):
     def __str__(self):
         return self.content[:20]
     
+    class Meta:
+        ordering = ['-created_at']
     
-
-        
-        
+       
         
 # rooms model ================>
-
-class Topic(models.Model):
-    name = models.CharField(max_length=50)
-    
-    def __str__(self):
-        return self.name
-
-
-class Room(models.Model):
+class Group(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=500)
-    #participants =
+    image = models.ImageField(upload_to='group_images/', null=True, blank=True)
+    description = models.TextField(max_length=500, blank=True, null=True, default='Group description not updated')
+    participants = models.ManyToManyField(User, blank=True, related_name='participants')
+    cover_img = models.ImageField(upload_to='group_img', blank=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -95,13 +89,20 @@ class Room(models.Model):
     def __str__(self):
         return self.name    
 
-class Messages(models.Model):
+class Conversations(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     body = models.TextField()
+    image = models.ImageField(upload_to='message-image', blank=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        ordering = ['-updated_at', '-created_at']
+        
     def __str__(self):
         return self.body[0:50]
+    
+    
+    
     

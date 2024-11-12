@@ -1,0 +1,90 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static "css/group.css" %}">
+    
+<div class="group-pan">
+    <div>
+        <label class="group-header">
+            <h2>{{group.name}}</h2>
+            <h6>{{ group.participants.count }} members</h6>
+        </label>
+        <label class="creator">
+            <img class="dp" src="{{group.host.profile.image.url}}" alt="host's profile pics">
+            <a href="{% url 'profile' group.host.username %}"><p>{{group.host}} </a><small id="createdby">_Creator.</small></p>
+           
+            <!-- Form to join the group -->
+            {% if request.user in participants.all %}
+                <p>Welcome!</p>  
+                {% else %}
+                <form method="POST" action="{% url 'join-group' group.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-success" id="join-btn" type="submit">Join</button>
+                </form>     
+            {% endif %}
+
+            {% if group.host == request.user %}
+                <form action="{% url 'delete-group' group.id %}" method="POST" style="display:inline;" onsubmit="return confirm('This Group with all messages will be  permanently deleted!');">
+                    {% csrf_token %}
+                    <button type="submit" id="delete-group-btn">Delete</button>
+                </form>
+            {% endif %} 
+            
+        </label>
+        <p>
+            <section class="messages-box-container">
+                <section class="messages-box">
+                    {% if request.user not in participants.all %}
+                     
+                    {% endif %}
+                    {% for conversations in conversations %}
+                    {% if conversations.user == request.user %}
+                    <label class="messagecontainer-sent">
+                        <li class="message-sent">{{conversations.body}}</li>
+                    </label>
+                    {% else %}
+                        
+                            <label class="messagecontainer">
+                                <img id="sender-profile" src="{{conversations.user.profile.image.url}}" alt="host's profile pics">
+                                <label class="message"> 
+                                    <small id="sender"><a href="{% url 'profile' conversations.user.username %}">~ {{conversations.user.username}}</a></small>
+                                    <p id="message-body"> {{conversations.body|linebreaks}} <p class="message-time"></p></p><br>
+                                    <small id="created-at">{{conversations.created_at|time}}</small>
+                                </label>
+                                
+                            </label>
+                       
+                    {% endif %}
+                    
+                        
+            
+                    {% endfor %}
+                </section>
+                <center>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input class="chat-input" type="text" placeholder="write..." name="body" required>
+                    <input class="send-button" type="submit" value="send">
+                </form> 
+                </center>       
+            </section>
+        </p>
+    </div>
+    <div>
+        <label class="description">
+            <p>{{group.description}}</p>
+            <hr>
+        </label>
+        <label class="participants-pan">
+            <h4># All Members</h4>
+            {% for participant in group.participants.all %}
+            <p>{{group.participants.username}}</p>
+            {% endfor %}
+        </label>
+        
+    </div>
+    
+
+</div>
+{% endblock content %} 
+

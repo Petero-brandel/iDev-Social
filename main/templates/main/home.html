@@ -1,6 +1,12 @@
 {% extends 'main/base.html' %}
 {% block title %}Home page{% endblock title %}
 {% block content %}
+<style>
+  moreabout{
+    margin-top: 70px;
+  }
+  
+</style>
 <div class="hero">
   <div class="hero-box">
       <h6><b>A New Yet Better Way To happy Coding!</b></h6>
@@ -12,7 +18,31 @@
       <button href='login.html' id="btn-2">Join Beale</button>
   </div>
 </div>
+<div>
+  {% include "main/features.html" %}
+</div>
 
+<center>
+  <div class="moreabout">
+    <h1> More to iDev.com hub</h1>
+    {% include "main/aboutcomponent.html" %}
+  </div>
+</center>
 
+<center>
+  <div>
+    {% include "main/testimonialcomponent.html" %}
+  </div>
+</center>
+
+<center>
+  <div>
+    {% include "main/home-cta-component.html" %}
+  </div>
+</center>
+
+  <div>
+    {% include "main/footercomponent.html" %}
+  </div>
 
 {% endblock content %}

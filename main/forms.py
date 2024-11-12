@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Profile, Project, Post, Room
+from .models import Profile, Project, Post, Group
 
 class SignupForm(UserCreationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ''}))
@@ -65,9 +65,20 @@ class CreatePostForm(ModelForm):
         }
         
         
-        # create room forms============>
+        # create Group forms============>
 
-class CreateRoomForm(ModelForm):
+class CreateGroupForm(ModelForm):
     class Meta:
-        model = Room
-        fields = ('name', 'topic', 'description')
+        model = Group
+        fields = ('name', 'description')
+        
+
+class GroupUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name', 'description', 'cover_img']  # Include any fields you want to allow users to update
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+            'name': forms.Textarea(attrs={'rows': 1}),
+            
+        }

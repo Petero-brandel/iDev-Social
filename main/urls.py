@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', views.home, name='home'),
     path('feed/', views.feed, name='feed'),
+    path('learn/', views.learn, name='learn-page'),
     path('signup/', views.signup, name='signup'),
     path('logout/', views.logout_view, name='logout_view'),
     path('profile/<str:username>/', views.profile, name='profile'),
@@ -18,7 +19,12 @@ urlpatterns = [
     path('add_post/', views.add_post, name='add_post'),
     path('like_post/<int:post_id>/', views.like_post, name='like_post'),
     path('add_comment/<int:post_id>/', views.add_comment, name='add_comment'),
-    path('create_room/', views.create_room, name='create-room'),
-    # path('update_room/<int:pk>/', views.update_room, name='update-room'),
+    path('create_group/', views.create_group, name='create-group'),
+    path('group_in/<str:pk>/', views.group_details, name='group-in'),
+    path('group/<int:pk>/join/', views.join_group, name='join-group'),
+    path('delete_group/<str:pk>/', views.delete_group, name='delete-group'),
+    # path('edit_group/<str:pk>/', views.edit_group, name='edit_group'),
+    
+    
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

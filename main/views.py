@@ -7,8 +7,8 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from .forms import SignupForm, LoginForm, ProfileUpdateForm, CreatePostForm, CreateProjectForm, CreateRoomForm
-from .models import Profile, Project, Post, Comment, Like, Room
+from .forms import SignupForm, LoginForm, ProfileUpdateForm, CreatePostForm, CreateProjectForm, CreateGroupForm
+from .models import Profile, Project, Post, Comment, Like, Group, Conversations
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.urls import reverse
@@ -21,7 +21,7 @@ def signup(request):
         form = SignupForm(request.POST)
         try:
             if form.is_valid():
-                user = form.save()
+                form.save()
                 # login(request, user) # Uncomment to log in after signup
                 return redirect('/login')
         except ValidationError as e:
@@ -39,9 +39,9 @@ def logout_view(request):
 @login_required(login_url='/login')
 def feed(request):
     # Retrieve all posts from the database
-    rooms = Room.objects.all()
+    group = Group.objects.all()
     posts = Post.objects.all().order_by('-created_at')  
-    return render(request, 'main/feed.html', {'posts': posts, 'rooms' : rooms})
+    return render(request, 'main/feed.html', {'posts': posts, 'groups' : group})
 
 def home(request):
     return render(request, 'main/home.html', {'home': home})
@@ -58,6 +58,14 @@ def profile(request, username):
         'projects': projects,
     }
     return render(request, 'main/profilepage.html', context)
+
+
+#learning pageview
+
+@login_required
+def learn(request):
+    
+    return render(request, 'main/learnpage.html', {})
 
 
 @login_required
@@ -158,9 +166,10 @@ def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     like, created = Like.objects.get_or_create(user=request.user, post=post)
     if not created:
-        # If the like already exists, unlike the project
+        # If the like already exists, unlike the post
         like.delete()
-    return redirect('/', username=Post.user.username)
+    return redirect('feed')
+
 
 
 @login_required
@@ -187,31 +196,96 @@ def delete_post(request, post_id):
 
 
 
-# Creating rooms function =====================>
-@login_required
-def create_room(request):
-    form = CreateRoomForm()
-    if request.method == 'POST':
-        form = CreateRoomForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/feed')
-    else:
-        form = CreateRoomForm()
-    return render(request, 'main/create_room_form.html', {'form': form})
-
-# # updating the rooms =======================>
+# # Creating groups function =====================>
 # @login_required
-# def update_room(request, pk):
-#     room = Room.objects.get(id=pk)
-#     form = CreateRoomForm(instance=room)
-    
+# def create_group(request):
+#     form = CreateGroupForm()
 #     if request.method == 'POST':
-#         form = CreateRoomForm(request.POST, instance=room)
+#         form = CreateGroupForm(request.POST)
+#         if form.is_valid():
+            
+#             group = form.save(commit=False)
+#             # Assign the logged-in user as the host
+#             group.host = request.user
+#             group.save()  #  save the group to the database
+#             group.participants.add(group.host)
+#             return redirect('/feed')
+#     return render(request, 'main/create_group_form.html', {'form': form})
+
+
+def group_details(request, pk):
+    group = get_object_or_404(Group, id=pk,)
+    conversations = Conversations.objects.filter(group=group)
+    participants = group.participants.all().filter(group=group)
+    if request.method =='POST':
+        message = request.POST.get('body')
+        conversations = Conversations.objects.create(
+            user=request.user,
+            group=group,
+            body=message
+        )
+        return redirect('group-in', pk=group.id)
+    context = {
+        'group':group,
+        'conversations':conversations,
+        'participants': participants,
+    }
+
+    return render(request, 'main/group_details.html', context)  
+
+
+@login_required
+def join_group(request, pk):
+    group = get_object_or_404(Group, pk=pk)  # Fetch the group by primary key (pk)
+    
+    if request.method == 'POST':
+        group.participants.add(request.user)  # Add the user to the participants
+        return redirect('group-in', pk=group.id)  # Redirect to the group details view
+    
+    # Optionally handle GET if needed
+    return redirect('feed')  # Redirect to feed or any other page
+
+
+@login_required
+def delete_group(request, pk):
+   
+    group = get_object_or_404(Group, pk=pk)
+    
+    if request.method == 'POST':
+        group.delete()  
+        messages.success(request, 'group deleted successfully.') 
+    
+    return redirect('/feed') 
+
+# @login_required
+# def edit_group(request, pk):
+#     group = get_object_or_404(Group, pk=pk)
+#     if request.method == 'POST':
+#         form = GroupUpdateForm(request.POST, request.FILES, instance=group)
 #         if form.is_valid():
 #             form.save()
-#             return redirect('/feed')
-            
+#             return redirect()
 #     else:
-#         form = CreateRoomForm(instance=room)
-#     return render(request, 'main/create_room_form.html', {'form': form})
+#         group = ProfileUpdateForm(instance=group)
+    
+#     return render(request, 'main/edit_profile.html', {'form': form})
+
+@login_required
+@login_required
+def create_group(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        image = request.FILES.get('image')  # Use request.FILES for the image field
+
+        # Create a new Group instance
+        group = Group(host=request.user, name=name, description=description, image=image)
+        group.save()
+        
+        # Add the user as a participant
+        group.participants.add(group.host)
+        
+        # Redirect to the feed page
+        return redirect('/feed')
+    
+    return render(request, 'main/group_details.html')

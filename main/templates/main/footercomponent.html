@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Footer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #1e1e1e; /* Dark background */
+            color: #ffffff; /* Light text */
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        footer .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+
+        footer .footer-logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00c8ff; /* Blueish color */
+        }
+
+        footer .footer-logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        footer .footer-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+        }
+
+        footer .footer-links li {
+            font-size: 1em;
+        }
+
+        footer .footer-links li a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer .footer-links li a:hover {
+            color: #00c8ff; /* Blue color on hover */
+        }
+
+        footer .footer-socials {
+            display: flex;
+            gap: 20px;
+        }
+
+        footer .footer-socials a {
+            color: #ffffff;
+            font-size: 1.5em;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer .footer-socials a:hover {
+            color: #00c8ff; /* Blue color on hover */
+        }
+
+        footer .footer-bottom {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #787878;
+        }
+
+        footer .footer-bottom a {
+            color: #787878;
+            text-decoration: none;
+        }
+
+        footer .footer-bottom a:hover {
+            color: #00c8ff; /* Blue color on hover */
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            footer .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            footer .footer-links {
+                justify-content: center;
+                margin-top: 20px;
+            }
+
+            footer .footer-socials {
+                justify-content: center;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <!-- Logo -->
+            <div class="footer-logo">
+                <a href="#">BrandName</a>
+            </div>
+
+            <!-- Footer Links -->
+            <ul class="footer-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+
+            <!-- Social Media Links -->
+            <div class="footer-socials">
+                <a href="#" target="_blank">📘</a>
+                <a href="#" target="_blank">🐦</a>
+                <a href="#" target="_blank">📸</a>
+            </div>
+        </div>
+
+        <!-- Footer Bottom Section -->
+        <div class="footer-bottom">
+            <p>&copy; 2024 BrandName. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>

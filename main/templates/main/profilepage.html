@@ -20,21 +20,19 @@
         <div>
             <aside>
                 <ul>
-                    <li><a href="/feed">Home</a></li>
-                    <li><a href="{{user.profile.github}}">GitHub</a></li>
+                    <li><a href="/feed"><i class="fa-solid fa-house"></i> Home</a></li>
+                    <li><a href="{{user.profile.github}}"><i class="fa-brands fa-github"></i> GitHub</a></li>
 
                     <!-- Profile Edit (only visible for the logged-in user) -->
                     {% if request.user == user %}
-                        <li><a id="edit-profile" href="{% url 'edit_profile' user.username %}">Profile Settings</a></li>
+                        <li><a id="edit-profile" href="{% url 'edit_profile' user.username %}"><i class="fa-solid fa-gear"></i> Profile Settings</a></li>
                     {% endif %}
              
-                    <li><a href="#">New Squad</a></li>
-                    <li><a href="#">Explore</a></li>
-                    <li><a href="#">Discussions</a></li>
+                    <li><a href="/feed"><i class="fa-solid fa-mask"></i> Explore </a></li>
                     <label class="tabs">
-                    <li><a class="tab" id="followers-tab">Followers</a></li>
-                    <li><a class="tab active" id="posts-tab">Posts</a></li>
-                    <li><a class="tab" id="following-tab">Following</a></li>
+                    <li><a class="tab" id="followers-tab"><i class="fa-solid fa-person-circle-plus"></i> Followers</a></li>
+                    <li><a class="tab active" id="posts-tab"><i class="fa-solid fa-blog"></i> Posts</a></li>
+                    <li><a class="tab" id="following-tab"> <i class="fa-solid fa-person-circle-plus"></i> Following</a></li>
 
                       <!-- Following Section -->
                         <div class="following-list" id="following-content" style="display: none;">
@@ -72,7 +70,7 @@
                     <li><a href="#">Docs</a></li>
                     <li><a href="#">Changelog</a></li>
                     <li><a href="#">Get Started</a></li> 
-                    <li><a id="get-started-link" href="/logout">Logout</a></li>
+                    <li><a id="get-started-link" href="/logout"> <i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
                 </ul>
             </aside>
         </div>
@@ -196,6 +194,33 @@
         <button class="next" onclick="plusSlides(1)">&#10095;</button>
     </div>
 </section>
+
+<script>
+    let slideIndex = 0;
+    const slides = document.querySelectorAll(".project-slide");
+    const totalSlides = slides.length;
+    
+    showSlides(slideIndex);
+    
+    // Function to show the current set of slides (3 at a time)
+    function showSlides(n) {
+        const maxVisible = 2; // Show 3 projects at a time
+        slides.forEach((slide, index) => {
+            slide.style.display = (index >= n && index < n + maxVisible) ? "block" : "none";
+        });
+    }
+    
+    // Function to increment/decrement slideIndex and show the correct slides
+    function plusSlides(n) {
+        slideIndex += n;
+        if (slideIndex < 0) {
+            slideIndex = totalSlides - 2; // Loop back to last set of slides
+        } else if (slideIndex >= totalSlides) {
+            slideIndex = 0; // Loop back to first set
+        }
+        showSlides(slideIndex);
+    }
+</script>
 
 
 {% endblock content %}
