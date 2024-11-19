@@ -1,0 +1,1 @@
+web gunicorn idevpro.wsgi:application --log-file -
